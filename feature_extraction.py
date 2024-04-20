@@ -1,3 +1,4 @@
+from typing import List
 import pandas as pd
 from sklearn.decomposition import PCA
 from umap.umap_ import UMAP
@@ -8,7 +9,7 @@ def feature_extraction(
         target: str,
         n_components: int,
         method: str,
-        ignore_columns = [],
+        ignore_columns: List[str] = [],
         UMAP_n_neighbors: int = 10,
         UMAP_min_dist: int = 0.2
     ) -> pd.DataFrame:
@@ -34,6 +35,10 @@ def feature_extraction(
         - `PCA` (Principal Component Analysis),
         - `UMAP` (Uniform Manifold Approximation and Projection),
         - `LDA` (Linear Discriminant Analysis).
+    
+    ignore_columns : List[str]
+        List of names of columns that shall be ignored when
+        performing feature extraction.
 
     UMAP_n_neighbors : int
         Parameter for the UMAP algorithm.
