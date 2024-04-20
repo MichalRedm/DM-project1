@@ -10,7 +10,7 @@ The general purpose of the code in this repository is to preprocess the dataset 
 
 A more detailed description of our project can be found in [our report](https://github.com/MichalRedm/DM-project1/blob/main/report.pdf).
 
-<img src="https://th.bing.com/th/id/OIG2.26ZnBEQYoNzIV2nJ2hJO?pid=ImgGn" style="max-width: 512px;" />
+<img src="https://th.bing.com/th/id/OIG2.26ZnBEQYoNzIV2nJ2hJO?pid=ImgGn" style="width: 512px;" />
 
 ## Setup
 
