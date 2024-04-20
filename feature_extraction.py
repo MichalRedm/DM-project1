@@ -50,8 +50,15 @@ def feature_extraction(
     Throws
     ------
     ValueError
-        When an unsupported feature extraction method is provided.
+        When an unsupported feature extraction method is provided,
+        or any other illegal argument value is provided.
     """
+    if not isinstance(df, pd.DataFrame):
+        ValueError("Argument df is not a pandas dataframe.")
+    if not target in df.columns:
+        ValueError("Invalid target column name.")
+    if not isinstance(n_components, int) or n_components <= 0:
+        ValueError("Number of components must be a positive integer.")
     X, X_ignored, y = df.drop([target] + ignore_columns, axis=1), df[ignore_columns], df[target]
     if method == "PCA":
         X_new = PCA(n_components=n_components).fit_transform(X)
