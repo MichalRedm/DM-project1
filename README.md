@@ -10,6 +10,8 @@ The general purpose of the code in this repository is to preprocess the dataset 
 
 A more detailed description of our project can be found in [our report](https://github.com/MichalRedm/DM-project1/blob/main/report.pdf).
 
+![Our team](https://th.bing.com/th/id/OIG2.26ZnBEQYoNzIV2nJ2hJO?pid=ImgGn)
+
 ## Setup
 
 Lorem ipsum dolor sit amet.
