@@ -12,6 +12,14 @@ A more detailed description of our project can be found in [our report](https://
 
 <img src="https://th.bing.com/th/id/OIG2.26ZnBEQYoNzIV2nJ2hJO?pid=ImgGn" style="width: 512px;" />
 
+## Prequisities
+
+To run the code from this repository, you need to have the following installed on your computer:
+- [Python](https://www.python.org/downloads/) (version 3.10 or higher);
+- [Jupyter Notebook](https://jupyter.org/);
+- [NumPy library](https://numpy.org/) (version 1.26 or higher);
+- [Pandas library](https://pandas.pydata.org/) (version 2.2 or higher).
+
 ## Setup
 
 Lorem ipsum dolor sit amet.
