@@ -1,7 +1,7 @@
 # DM-project1
 
 This repository contains the code for the first project for Data Mining classes at the Poznań University of Technology. The code in this repository has been created by the team *Kung Fu Pandas*, consisting of:
-- Piotr Balewski,
+- [Piotr Balewski](https://github.com/PBalewski),
 - [Adam Dobosz](https://github.com/addobosz),
 - [Wiktor Kamzela](https://github.com/Wector1),
 - [Michał Redmer](https://github.com/MichalRedm).
