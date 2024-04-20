@@ -22,4 +22,12 @@ To run the code from this repository, you need to have the following installed o
 
 ## Setup
 
-Lorem ipsum dolor sit amet.
+*TODO*
+
+## Preprocessing the data
+
+*TODO*
+
+## Testing the results
+
+*TODO*
