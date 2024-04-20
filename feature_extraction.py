@@ -53,13 +53,20 @@ def feature_extraction(
         When an unsupported feature extraction method is provided,
         or any other illegal argument value is provided.
     """
+
+    # Validate the arguments.
     if not isinstance(df, pd.DataFrame):
         raise ValueError("Argument df is not a pandas dataframe.")
     if not target in df.columns:
         raise ValueError("Invalid target column name.")
     if not isinstance(n_components, int) or n_components <= 0:
         raise ValueError("Number of components must be a positive integer.")
+    
+    # Extract columns for which the feature extraction shall be performed, columns that shall be ignored
+    # and the target column from the provided dataframe.
     X, X_ignored, y = df.drop([target] + ignore_columns, axis=1), df[ignore_columns], df[target]
+
+    # Perform feature extraction using the requested algorithm.
     if method == "PCA":
         X_new = PCA(n_components=n_components).fit_transform(X)
     elif method == "UMAP":
@@ -72,6 +79,8 @@ def feature_extraction(
         X_new = LDA(n_components=n_components).fit_transform(X, y)
     else:
         raise ValueError(f"Unsupported feature extraction method: '{method}'.")
+    
+    # Prepare and return the new dataframe.
     result = pd.concat([
         pd.DataFrame(X_new, columns=[f"component{i}" for i in range(n_components)]),
         X_ignored
