@@ -1,7 +1,7 @@
 # DM-project1
 
 This repository contains the code for the first project for Data Mining classes at the Poznań University of Technology. The code in this repository has been created by the team *Kung Fu Pandas*, consisting of:
-- Piotr Balewski,
+- [Piotr Balewski](https://github.com/PBalewski),
 - [Adam Dobosz](https://github.com/addobosz),
 - [Wiktor Kamzela](https://github.com/Wector1),
 - [Michał Redmer](https://github.com/MichalRedm).
@@ -16,9 +16,18 @@ A more detailed description of our project can be found in [our report](https://
 
 To run the code from this repository, you need to have the following installed on your computer:
 - [Python](https://www.python.org/downloads/) (version 3.10 or higher);
-- [Jupyter Notebook](https://jupyter.org/);
 - [NumPy library](https://numpy.org/) (version 1.26 or higher);
-- [Pandas library](https://pandas.pydata.org/) (version 2.2 or higher).
+- [Pandas library](https://pandas.pydata.org/) (version 2.2 or higher)
+- [Sklearn library](https://scikit-learn.org/stable/)
+- [UMAP library](https://umap-learn.readthedocs.io/en/latest/)
+
+Once you have Python installed, you can run the following commands in your terminal to install all the necessary libraries:
+```bash
+$ pip install numpy
+$ pip install pandas
+$ pip install sklearn
+$ pip install umap-learn
+```
 
 ## Setup
 

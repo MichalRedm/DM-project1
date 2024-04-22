@@ -1,3 +1,4 @@
+from typing import List
 import pandas as pd
 from sklearn.decomposition import PCA
 from umap.umap_ import UMAP
@@ -8,7 +9,7 @@ def feature_extraction(
         target: str,
         n_components: int,
         method: str,
-        ignore_columns = [],
+        ignore_columns: List[str] = [],
         UMAP_n_neighbors: int = 10,
         UMAP_min_dist: int = 0.2
     ) -> pd.DataFrame:
@@ -34,6 +35,10 @@ def feature_extraction(
         - `PCA` (Principal Component Analysis),
         - `UMAP` (Uniform Manifold Approximation and Projection),
         - `LDA` (Linear Discriminant Analysis).
+    
+    ignore_columns : List[str]
+        List of names of columns that shall be ignored when
+        performing feature extraction.
 
     UMAP_n_neighbors : int
         Parameter for the UMAP algorithm.
@@ -50,9 +55,23 @@ def feature_extraction(
     Throws
     ------
     ValueError
-        When an unsupported feature extraction method is provided.
+        When an unsupported feature extraction method is provided,
+        or any other illegal argument value is provided.
     """
+
+    # Validate the arguments.
+    if not isinstance(df, pd.DataFrame):
+        raise ValueError("Argument df is not a pandas dataframe.")
+    if not target in df.columns:
+        raise ValueError("Invalid target column name.")
+    if not isinstance(n_components, int) or n_components <= 0:
+        raise ValueError("Number of components must be a positive integer.")
+    
+    # Extract columns for which the feature extraction shall be performed, columns that shall be ignored
+    # and the target column from the provided dataframe.
     X, X_ignored, y = df.drop([target] + ignore_columns, axis=1), df[ignore_columns], df[target]
+
+    # Perform feature extraction using the requested algorithm.
     if method == "PCA":
         X_new = PCA(n_components=n_components).fit_transform(X)
     elif method == "UMAP":
@@ -65,6 +84,8 @@ def feature_extraction(
         X_new = LDA(n_components=n_components).fit_transform(X, y)
     else:
         raise ValueError(f"Unsupported feature extraction method: '{method}'.")
+    
+    # Prepare and return the new dataframe.
     result = pd.concat([
         pd.DataFrame(X_new, columns=[f"component{i}" for i in range(n_components)]),
         X_ignored
