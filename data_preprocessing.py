@@ -2,20 +2,42 @@ import numpy as np
 import pandas as pd
 from sklearn import preprocessing
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from typing import List, Any
 
 
-def reduce_category_nr(data, col, cat_list):
+def reduce_category_nr(data: pd.DataFrame, col: str, cat_list: List[Any]) -> None:
     """
     Filters the column, leaving only selected values - that are in cat_list - 
     and replacing the rest with "Other".
+
+    Parameters
+    ----------
+    data : pd.DataFrame
+        Pandas dataframe containing data for which the filtering shall
+        be performed
+    
+    col : str
+        Name of the column that should be filtered.
+    
+    cat_list : List[Any]
+        List of values that shall be preserved after the reduction process.
     """
 
     data[col] = data[col].apply(lambda x: x if x in cat_list else "Other")
 
 
-def encode_labels(data, col):
+def encode_labels(data: pd.DataFrame, col: str) -> None:
     """
     Performs One-Hot encoding for a selected categorical column.
+
+    Parameters
+    ----------
+    data : pd.DataFrame
+        Pandas dataframe containing data for which the operation shall
+        be performed.
+    
+    col : str
+        Name of the column that should be one-hot encoded.
     """
 
     data_target = data[col].values
@@ -24,9 +46,18 @@ def encode_labels(data, col):
     data[col] = one_hots
 
 
-def normalize(data, num_cols):
+def normalize(data: pd.DataFrame, num_cols: List[str]) -> None:
     """
     Normalizes all numerical columns.
+
+    Parameters
+    ----------
+    data : pd.DataFrame
+        Pandas dataframe containing data for which the normalization shall
+        be performed.
+    
+    num_cols : List[str]
+        List of names of numerical columns for that should be normalized.
     """
 
     X = data[num_cols]
@@ -35,9 +66,18 @@ def normalize(data, num_cols):
     data[num_cols] = transformed_data
 
 
-def standarize(data, num_cols):
+def standarize(data: pd.DataFrame, num_cols: List[str]) -> None:
     """
     Standarizes all numerical columns.
+
+    Parameters
+    ----------
+    data : pd.DataFrame
+        Pandas dataframe containing data for which the standarization shall
+        be performed.
+    
+    num_cols : List[str]
+        List of names of numerical columns for that should be standarized.
     """
 
     X = data[num_cols]
@@ -46,7 +86,7 @@ def standarize(data, num_cols):
     data[num_cols] = transformed_data
 
 
-def preprocess_data(data: pd.DataFrame, cat_lists: list[list[str]]):
+def preprocess_data(data: pd.DataFrame, cat_lists: List[List[str]]) -> None:
     """
     Performes whole data preprocessing: reduces category number,
     One_Hot encodes categorical columns, normalizes and standarizes numerical ones.
@@ -59,7 +99,6 @@ def preprocess_data(data: pd.DataFrame, cat_lists: list[list[str]]):
     cat_lists : List[List[str]]
         List of lists of categorical for values that will be distinguished from "Other"s
         in order: model, transmission, fuelType, Manufacturer
-    ----------
     """
 
     global num_cols
