@@ -35,7 +35,11 @@ $ pip install umap-learn
 
 ## Preprocessing the data
 
-*TODO*
+The file `process.py` is responsible for processing the dataset. To generate a preprocessed dataset, run the following command:
+```
+$ python process.py [OUTPUT FILE NAME]
+```
+Argument `OUTPUT FILE NAME` should be the name of a CSV file to which the result shall be written.
 
 ## Testing the results
 
