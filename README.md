@@ -29,6 +29,8 @@ $ pip install sklearn
 $ pip install umap-learn
 ```
 
+Additionally, to run code samples in the file `samples.ipynb` [Jupyer Notebook](https://jupyter.org/install) is needed (the file can alternatively be opened in [Google Colaboratory](https://colab.research.google.com/)).
+
 ## Setup
 
 *TODO*
