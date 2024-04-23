@@ -66,9 +66,9 @@ def normalize(data: pd.DataFrame, num_cols: List[str]) -> None:
     data[num_cols] = transformed_data
 
 
-def standarize(data: pd.DataFrame, num_cols: List[str]) -> None:
+def standardize(data: pd.DataFrame, num_cols: List[str]) -> None:
     """
-    Standarizes all numerical columns.
+    Standardizes all numerical columns.
 
     Parameters
     ----------
@@ -77,7 +77,7 @@ def standarize(data: pd.DataFrame, num_cols: List[str]) -> None:
         be performed.
     
     num_cols : List[str]
-        List of names of numerical columns for that should be standarized.
+        List of names of numerical columns for that should be standardized.
     """
 
     X = data[num_cols]
@@ -89,7 +89,7 @@ def standarize(data: pd.DataFrame, num_cols: List[str]) -> None:
 def preprocess_data(data: pd.DataFrame, cat_lists: List[List[str]], target: str) -> pd.DataFrame:
     """
     Performes whole data preprocessing: reduces category number,
-    One_Hot encodes categorical columns, normalizes and standarizes numerical ones.
+    One_Hot encodes categorical columns, normalizes and standardizes numerical ones.
 
     Parameters
     ----------
@@ -120,7 +120,7 @@ def preprocess_data(data: pd.DataFrame, cat_lists: List[List[str]], target: str)
     #     encode_labels(data, col)
     
     normalize(data, num_cols)
-    standarize(data, num_cols)
+    standardize(data, num_cols)
 
     return data
 
