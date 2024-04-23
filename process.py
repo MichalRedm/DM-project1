@@ -9,12 +9,22 @@ from data_preprocessing import preprocess_data
 from feature_extraction import feature_extraction
 
 def main() -> None:
+    arg1 = sys.argv[1]
+    if arg1 in ("--help", "-h"):
+        print("Script designed for the purpose of preprocessing the Cars Dataset.")
+        print("Usage: python process.py [OUTPUT FILE NAME]")
+        return
     data = pd.read_csv("./CarsData.csv")
-    preprocess_data(data, [])
+    target = "price"
+    model_freq = data["model"].value_counts(normalize=True)
+    models_over_1percent = model_freq[model_freq > 0.01].index.tolist()
+    transmission_common_types = ["Manual", "Semi-Auto", "Automatic"]
+    fueulType_common_types = ["Petrol", "Diesel", "Hybrid", "Electric"]
+    cat_lists = [models_over_1percent, transmission_common_types, fueulType_common_types]
+    preprocess_data(data, cat_lists, target)
     # TODO: feature selection
-    # TODO: feature extraction
-    output_filename = sys.argv[1]
-    data.to_csv(output_filename)
+    data = feature_extraction(data, target, 3, "PCA", ['Manufacturer', 'fuelType', 'model', 'transmission'])
+    data.to_csv(arg1, index=False)
 
 if __name__ == "__main__":
     main()

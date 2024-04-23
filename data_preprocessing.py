@@ -86,7 +86,7 @@ def standarize(data: pd.DataFrame, num_cols: List[str]) -> None:
     data[num_cols] = transformed_data
 
 
-def preprocess_data(data: pd.DataFrame, cat_lists: List[List[str]]) -> None:
+def preprocess_data(data: pd.DataFrame, cat_lists: List[List[str]], target: str) -> None:
     """
     Performes whole data preprocessing: reduces category number,
     One_Hot encodes categorical columns, normalizes and standarizes numerical ones.
@@ -99,11 +99,15 @@ def preprocess_data(data: pd.DataFrame, cat_lists: List[List[str]]) -> None:
     cat_lists : List[List[str]]
         List of lists of categorical for values that will be distinguished from "Other"s
         in order: model, transmission, fuelType, Manufacturer
+    
+    target : str
+        Name of the target column for which the value shall be predicted by
+        the machine learning algorithm later on.
     """
 
-    global num_cols
-    num_cols = ['year', 'mileage', 'tax', 'mpg', 'engineSize']
-    cat_cols = ['model', 'transmission', 'fuelType', 'Manufacturer']
+    num_cols = list(data.select_dtypes([np.number]).columns)
+    cat_cols = np.setdiff1d(data.columns, num_cols)
+    num_cols.remove(target) # Ignore the target variable.
 
     for i in range(len(cat_lists)):
         reduce_category_nr(data, cat_cols[i], cat_lists[i])
@@ -120,7 +124,7 @@ def preprocess_data(data: pd.DataFrame, cat_lists: List[List[str]]) -> None:
 
 def main() -> None:
     data = pd.read_csv("CarsData.csv")
-    model_freq = data['model'].value_counts(normalize=True)
+    model_freq = data["model"].value_counts(normalize=True)
     models_over_1percent = model_freq[model_freq > 0.01].index.tolist()
     transmission_common_types = ["Manual", "Semi-Auto", "Automatic"]
     fueulType_common_types = ["Petrol", "Diesel", "Hybrid", "Electric"]
