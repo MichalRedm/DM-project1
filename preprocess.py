@@ -1,3 +1,12 @@
+"""
+Main file responsible for preprocessing the data. Contains function
+'preprocess' that transforms the dataset in the form of pandas
+DataFrame. When the script is ran from the console, it reads the
+dataset from a CSV file and writes the preprocessed dataset
+to another file.
+"""
+
+
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler, OneHotEncoder, FunctionTransformer
 from sklearn.compose import ColumnTransformer
@@ -58,6 +67,7 @@ def preprocess(
     target column as the last column.
     """
 
+    # Validate the function parameters.
     assert isinstance(df, pd.DataFrame), "Parameter 'df' must be a pandas DataFrame."
     assert target in df.columns, "Parameter 'target' must be name of a column in DataFrame 'df'."
     assert isinstance(variance_treshold, float) and variance_treshold > 0, "Parameter 'variance_treshold' must be a positive float."
@@ -65,16 +75,20 @@ def preprocess(
     assert feature_extraction_method in ("PCA", "LDA"), "Parameter 'feature_extraction_method' must be 'PCA' or 'LDA'."
     assert isinstance(verbose, bool), "Parameter 'verbose' must be a boolean."
 
+    # Extract features and target.
     X, y = df.drop(target, axis=1), df[target].to_numpy()
 
+    # Determine which columns are numerical and which are categorical.
     num_cols = list(X.select_dtypes([np.number]).columns)
     cat_cols = list(np.setdiff1d(X.columns, num_cols))
 
+    # Pipeline to be applied to numerical columns.
     num_pipeline = Pipeline([
         ('Variance_threshold', VarianceThreshold(threshold=variance_treshold)),
         ('std_scaler', StandardScaler())
     ])
 
+    # Pipeline to be applied to categorical columns.
     cat_pipeline = Pipeline([
         ('ohe', OneHotEncoder(handle_unknown='ignore')),
         ('Variance_threshold', VarianceThreshold(threshold=variance_treshold)),
@@ -88,12 +102,14 @@ def preprocess(
     full_pipeline = Pipeline([
         ('transform', col_transform),
         ('dense', FunctionTransformer(lambda x: np.array(x.todense()), accept_sparse=True)),
-        ('select_from_model', SelectFromModel(LassoCV(), threshold=feature_selection_treshold)),
-        (('pca', PCA()) if feature_extraction_method == "PCA" else ("lda", LDA()))
+        ('select_from_model', SelectFromModel(LassoCV(), threshold=feature_selection_treshold)), # Feature selection.
+        (('pca', PCA()) if feature_extraction_method == "PCA" else ("lda", LDA())) # Feature extraction.
     ], verbose=verbose)
 
+    # Apply the pipeline to preprocess the dataset.
     X_new_np = full_pipeline.fit_transform(X, y)
 
+    # Prepare and return the final DataFrame.
     df = pd.DataFrame(X_new_np, columns=[f"componenet{i}" for i in range(X_new_np.shape[1])])
     df.insert(len(df.columns), target, y)
     return df
