@@ -5,6 +5,8 @@ from sklearn.base import TransformerMixin
 from sklearn.decomposition import PCA, TruncatedSVD
 import numpy as np
 import pandas as pd
+from sklearn.feature_selection import VarianceThreshold, SelectFromModel
+from sklearn.linear_model import Perceptron, LassoCV, LogisticRegression, LinearRegression
 
 
 INPUT_DATASET = "./CarsData.csv"
@@ -45,11 +47,13 @@ def preprocess(df: pd.DataFrame, target: str) -> pd.DataFrame:
     cat_cols = list(np.setdiff1d(X.columns, num_cols))
 
     num_pipeline = Pipeline([
+        ('Variance_threshold', VarianceThreshold(threshold=0.01)),
         ('std_scaler', StandardScaler())
     ])
 
     cat_pipeline = Pipeline([
-        ('ohe', OneHotEncoder())
+        ('ohe', OneHotEncoder(handle_unknown='ignore')),
+        ('Variance_threshold', VarianceThreshold(threshold=0.01)),
     ])
 
     col_transform = ColumnTransformer([
@@ -60,8 +64,11 @@ def preprocess(df: pd.DataFrame, target: str) -> pd.DataFrame:
     full_pipeline = Pipeline([
         ('transform', col_transform),
         ('dense', FunctionTransformer(lambda x: np.array(x.todense()), accept_sparse=True)),
-        ('pca', PCA(n_components = 0.95))
-    ])
+        ('select_from_model', SelectFromModel(LassoCV(), threshold=200.0)),
+        ('pca', PCA())
+    ],
+        verbose = True,
+    )
 
     X_new_np = full_pipeline.fit_transform(X, y)
 
