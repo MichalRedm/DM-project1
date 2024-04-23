@@ -4,24 +4,21 @@ from sklearn.compose import ColumnTransformer
 from sklearn.base import TransformerMixin
 from sklearn.decomposition import PCA, TruncatedSVD
 import numpy as np
+from sklearn.feature_selection import VarianceThreshold, SelectFromModel
+from sklearn.linear_model import Perceptron, LassoCV
 
 
 num_cols = ['year', 'mileage', 'tax', 'mpg', 'engineSize']
 cat_cols = ['model', 'transmission', 'fuelType',  'Manufacturer']
 
-class DenseTransformer(TransformerMixin):
-
-    def fit(self, X, y=None, **fit_params):
-        return self
-    def transform(self, X, y=None, **fit_params):
-        return X.todense()
-
 num_pipeline = Pipeline([
+    ('Variance_threshold', VarianceThreshold(threshold=0.01)),
     ('std_scaler', StandardScaler())
 ])
 
 cat_pipeline = Pipeline([
-    ('ohe', OneHotEncoder())
+    ('ohe', OneHotEncoder()),
+    ('Variance_threshold', VarianceThreshold(threshold=0.01)),
 ])
 
 col_transform = ColumnTransformer([
@@ -32,5 +29,8 @@ col_transform = ColumnTransformer([
 full_pipeline = Pipeline([
     ('transform', col_transform),
     ('dense', FunctionTransformer(lambda x: np.array(x.todense()), accept_sparse=True)),
-    ('pca', PCA(n_components = 0.95))
-])
+    ('k_best', SelectFromModel(LassoCV(), threshold=200.0)),
+    ('pca', PCA(n_components = 0.95)),
+],
+    verbose = True,
+) 
