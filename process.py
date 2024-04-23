@@ -22,6 +22,8 @@ def main() -> None:
     fueulType_common_types = ["Petrol", "Diesel", "Hybrid", "Electric"]
     cat_lists = [models_over_1percent, transmission_common_types, fueulType_common_types]
     data = preprocess_data(data, cat_lists, target)
+    # TODO: data preprocessing seems questionable, as some columns (Manufaturer, fuelType, model)
+    # seem to be reduced to a single value before one-hot encoding. Fix that issue.
     # TODO: feature selection
     data = feature_extraction(data, target, 5, "PCA", [])
     data.to_csv(arg1, index=False)
