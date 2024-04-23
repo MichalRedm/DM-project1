@@ -3,22 +3,16 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder, FunctionTransfo
 from sklearn.compose import ColumnTransformer
 from sklearn.base import TransformerMixin
 from sklearn.decomposition import PCA, TruncatedSVD
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 import numpy as np
 import pandas as pd
 from sklearn.feature_selection import VarianceThreshold, SelectFromModel
 from sklearn.linear_model import Perceptron, LassoCV, LogisticRegression, LinearRegression
+from typing import Literal
 
 
 INPUT_DATASET = "./CarsData.csv"
 OUTPUT_DATASET = "./CarsDataProcessed.csv"
-
-
-class DenseTransformer(TransformerMixin):
-
-    def fit(self, X, y=None, **fit_params):
-        return self
-    def transform(self, X, y=None, **fit_params):
-        return X.todense()
     
 
 def preprocess(
@@ -26,6 +20,7 @@ def preprocess(
         target: str,
         variance_treshold: float = 0.01,
         feature_selection_treshold: float = 200.0,
+        feature_extraction_method: Literal["PCA", "LDA"] = "PCA",
         verbose: bool = True
     ) -> pd.DataFrame:
     """
@@ -47,6 +42,12 @@ def preprocess(
     feature_selection_treshold : float
         Treshold used for feature selection.
 
+    feature_extraction_method : Literal["PCA", "LDA"]
+        Feature extraction algorithm that should be employed. The following ones
+        are supported:
+        - PCA (Principal Component Analysis),
+        - LDA (Linear Discriminant Analysis).
+
     verbose : bool
         If set to true, the function will print information about the progress
         of data preprocessing.
@@ -56,6 +57,13 @@ def preprocess(
     Pandas dataframe containing the dataset after preprocessing and the
     target column as the last column.
     """
+
+    assert isinstance(df, pd.DataFrame), "Parameter 'df' must be a pandas DataFrame."
+    assert target in df.columns, "Parameter 'target' must be name of a column in DataFrame 'df'."
+    assert isinstance(variance_treshold, float) and variance_treshold > 0, "Parameter 'variance_treshold' must be a positive float."
+    assert isinstance(feature_selection_treshold, float) and feature_selection_treshold > 0, "Parameter 'feature_selection_treshold' must be a positive float."
+    assert feature_extraction_method in ("PCA", "LDA"), "Parameter 'feature_extraction_method' must be 'PCA' or 'LDA'."
+    assert isinstance(verbose, bool), "Parameter 'verbose' must be a boolean."
 
     X, y = df.drop(target, axis=1), df[target].to_numpy()
 
@@ -81,7 +89,7 @@ def preprocess(
         ('transform', col_transform),
         ('dense', FunctionTransformer(lambda x: np.array(x.todense()), accept_sparse=True)),
         ('select_from_model', SelectFromModel(LassoCV(), threshold=feature_selection_treshold)),
-        ('pca', PCA())
+        (('pca', PCA()) if feature_extraction_method == "PCA" else ("lda", LDA()))
     ], verbose=verbose)
 
     X_new_np = full_pipeline.fit_transform(X, y)
