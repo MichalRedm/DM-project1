@@ -37,11 +37,11 @@ Once this is done, you are ready to run the code.
 
 ## Preprocessing the data
 
-The file `process.py` is responsible for processing the dataset. To generate a preprocessed dataset, run the following command:
+The file `preprocess.py` is responsible for processing the dataset. To generate a preprocessed dataset, run the following command:
 ```
-$ python process.py [OUTPUT FILE NAME]
+$ python preprocess.py
 ```
-Argument `OUTPUT FILE NAME` should be the name of a CSV file to which the result shall be written.
+The new dataset will be written to a file `CarsDataProcessed.csv`.
 
 ## Testing the results
 
