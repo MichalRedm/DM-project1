@@ -21,9 +21,9 @@ def main() -> None:
     transmission_common_types = ["Manual", "Semi-Auto", "Automatic"]
     fueulType_common_types = ["Petrol", "Diesel", "Hybrid", "Electric"]
     cat_lists = [models_over_1percent, transmission_common_types, fueulType_common_types]
-    preprocess_data(data, cat_lists, target)
+    data = preprocess_data(data, cat_lists, target)
     # TODO: feature selection
-    data = feature_extraction(data, target, 3, "PCA", ['Manufacturer', 'fuelType', 'model', 'transmission'])
+    data = feature_extraction(data, target, 5, "PCA", [])
     data.to_csv(arg1, index=False)
 
 if __name__ == "__main__":

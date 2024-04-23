@@ -26,24 +26,24 @@ def reduce_category_nr(data: pd.DataFrame, col: str, cat_list: List[Any]) -> Non
     data[col] = data[col].apply(lambda x: x if x in cat_list else "Other")
 
 
-def encode_labels(data: pd.DataFrame, col: str) -> None:
-    """
-    Performs One-Hot encoding for a selected categorical column.
+# def encode_labels(data: pd.DataFrame, col: str) -> None:
+#     """
+#     Performs One-Hot encoding for a selected categorical column.
 
-    Parameters
-    ----------
-    data : pd.DataFrame
-        Pandas dataframe containing data for which the operation shall
-        be performed.
+#     Parameters
+#     ----------
+#     data : pd.DataFrame
+#         Pandas dataframe containing data for which the operation shall
+#         be performed.
     
-    col : str
-        Name of the column that should be one-hot encoded.
-    """
+#     col : str
+#         Name of the column that should be one-hot encoded.
+#     """
 
-    data_target = data[col].values
-    one_hot = preprocessing.OneHotEncoder(categories='auto').fit(data_target.reshape(-1,1))
-    one_hots = one_hot.transform(data_target.reshape(-1,1)).todense()
-    data[col] = one_hots
+#     data_target = data[col].values
+#     one_hot = preprocessing.OneHotEncoder(categories='auto').fit(data_target.reshape(-1,1))
+#     one_hots = one_hot.transform(data_target.reshape(-1,1)).todense()
+#     data[col] = one_hots
 
 
 def normalize(data: pd.DataFrame, num_cols: List[str]) -> None:
@@ -86,7 +86,7 @@ def standarize(data: pd.DataFrame, num_cols: List[str]) -> None:
     data[num_cols] = transformed_data
 
 
-def preprocess_data(data: pd.DataFrame, cat_lists: List[List[str]], target: str) -> None:
+def preprocess_data(data: pd.DataFrame, cat_lists: List[List[str]], target: str) -> pd.DataFrame:
     """
     Performes whole data preprocessing: reduces category number,
     One_Hot encodes categorical columns, normalizes and standarizes numerical ones.
@@ -105,6 +105,8 @@ def preprocess_data(data: pd.DataFrame, cat_lists: List[List[str]], target: str)
         the machine learning algorithm later on.
     """
 
+    data = data.copy()
+
     num_cols = list(data.select_dtypes([np.number]).columns)
     cat_cols = np.setdiff1d(data.columns, num_cols)
     num_cols.remove(target) # Ignore the target variable.
@@ -112,11 +114,15 @@ def preprocess_data(data: pd.DataFrame, cat_lists: List[List[str]], target: str)
     for i in range(len(cat_lists)):
         reduce_category_nr(data, cat_cols[i], cat_lists[i])
 
-    for col in cat_cols:
-        encode_labels(data, col)
+    data = pd.get_dummies(data, columns=cat_cols, dtype=np.float32) # One-hot encoding.
+
+    # for col in cat_cols:
+    #     encode_labels(data, col)
     
     normalize(data, num_cols)
     standarize(data, num_cols)
+
+    return data
 
 
 # Usage example.
@@ -130,7 +136,7 @@ def main() -> None:
     fueulType_common_types = ["Petrol", "Diesel", "Hybrid", "Electric"]
     cat_lists = [models_over_1percent, transmission_common_types, fueulType_common_types]
 
-    preprocess_data(data, cat_lists)
+    data = preprocess_data(data, cat_lists)
     print(data.head())
 
 if __name__ == "__main__":
