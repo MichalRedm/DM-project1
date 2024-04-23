@@ -84,26 +84,26 @@ def preprocess(
 
     # Pipeline to be applied to numerical columns.
     num_pipeline = Pipeline([
-        ('Variance_threshold', VarianceThreshold(threshold=variance_treshold)),
-        ('std_scaler', StandardScaler())
+        ("Variance_threshold", VarianceThreshold(threshold=variance_treshold)),
+        ("std_scaler", StandardScaler())
     ])
 
     # Pipeline to be applied to categorical columns.
     cat_pipeline = Pipeline([
-        ('ohe', OneHotEncoder(handle_unknown='ignore')),
-        ('Variance_threshold', VarianceThreshold(threshold=variance_treshold)),
+        ("ohe", OneHotEncoder(handle_unknown="ignore")),
+        ("Variance_threshold", VarianceThreshold(threshold=variance_treshold)),
     ])
 
     col_transform = ColumnTransformer([
-        ('num', num_pipeline, num_cols),
-        ('cat', cat_pipeline, cat_cols)
+        ("num", num_pipeline, num_cols),
+        ("cat", cat_pipeline, cat_cols)
     ])
 
     full_pipeline = Pipeline([
-        ('transform', col_transform),
-        ('dense', FunctionTransformer(lambda x: np.array(x.todense()), accept_sparse=True)),
-        ('select_from_model', SelectFromModel(LassoCV(), threshold=feature_selection_treshold)), # Feature selection.
-        (('pca', PCA()) if feature_extraction_method == "PCA" else ("lda", LDA())) # Feature extraction.
+        ("transform", col_transform),
+        ("dense", FunctionTransformer(lambda x: np.array(x.todense()), accept_sparse=True)),
+        ("select_from_model", SelectFromModel(LassoCV(), threshold=feature_selection_treshold)), # Feature selection.
+        (("pca", PCA()) if feature_extraction_method == "PCA" else ("lda", LDA())) # Feature extraction.
     ], verbose=verbose)
 
     # Apply the pipeline to preprocess the dataset.
