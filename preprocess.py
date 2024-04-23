@@ -21,7 +21,13 @@ class DenseTransformer(TransformerMixin):
         return X.todense()
     
 
-def preprocess(df: pd.DataFrame, target: str) -> pd.DataFrame:
+def preprocess(
+        df: pd.DataFrame,
+        target: str,
+        variance_treshold: float = 0.01,
+        feature_selection_treshold: float = 200.0,
+        verbose: bool = True
+    ) -> pd.DataFrame:
     """
     Performs preprocessing on the data.
 
@@ -34,6 +40,16 @@ def preprocess(df: pd.DataFrame, target: str) -> pd.DataFrame:
     target : str
         Name of the target column (for which the machine learning algorithm
         should predict the value).
+    
+    variance_treshold : float
+        Treshold such that features with variance below it will be removed.
+    
+    feature_selection_treshold : float
+        Treshold used for feature selection.
+
+    verbose : bool
+        If set to true, the function will print information about the progress
+        of data preprocessing.
 
     Returns
     -------
@@ -47,13 +63,13 @@ def preprocess(df: pd.DataFrame, target: str) -> pd.DataFrame:
     cat_cols = list(np.setdiff1d(X.columns, num_cols))
 
     num_pipeline = Pipeline([
-        ('Variance_threshold', VarianceThreshold(threshold=0.01)),
+        ('Variance_threshold', VarianceThreshold(threshold=variance_treshold)),
         ('std_scaler', StandardScaler())
     ])
 
     cat_pipeline = Pipeline([
         ('ohe', OneHotEncoder(handle_unknown='ignore')),
-        ('Variance_threshold', VarianceThreshold(threshold=0.01)),
+        ('Variance_threshold', VarianceThreshold(threshold=variance_treshold)),
     ])
 
     col_transform = ColumnTransformer([
@@ -64,11 +80,9 @@ def preprocess(df: pd.DataFrame, target: str) -> pd.DataFrame:
     full_pipeline = Pipeline([
         ('transform', col_transform),
         ('dense', FunctionTransformer(lambda x: np.array(x.todense()), accept_sparse=True)),
-        ('select_from_model', SelectFromModel(LassoCV(), threshold=200.0)),
+        ('select_from_model', SelectFromModel(LassoCV(), threshold=feature_selection_treshold)),
         ('pca', PCA())
-    ],
-        verbose = True,
-    )
+    ], verbose=verbose)
 
     X_new_np = full_pipeline.fit_transform(X, y)
 
