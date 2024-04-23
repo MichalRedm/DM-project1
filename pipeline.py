@@ -5,7 +5,7 @@ from sklearn.base import TransformerMixin
 from sklearn.decomposition import PCA, TruncatedSVD
 import numpy as np
 from sklearn.feature_selection import VarianceThreshold, SelectFromModel
-from sklearn.linear_model import Perceptron, LassoCV
+from sklearn.linear_model import Perceptron, LassoCV, LogisticRegression, LinearRegression
 
 
 num_cols = ['year', 'mileage', 'tax', 'mpg', 'engineSize']
@@ -17,7 +17,7 @@ num_pipeline = Pipeline([
 ])
 
 cat_pipeline = Pipeline([
-    ('ohe', OneHotEncoder()),
+    ('ohe', OneHotEncoder(handle_unknown='ignore')),
     ('Variance_threshold', VarianceThreshold(threshold=0.01)),
 ])
 
@@ -29,8 +29,9 @@ col_transform = ColumnTransformer([
 full_pipeline = Pipeline([
     ('transform', col_transform),
     ('dense', FunctionTransformer(lambda x: np.array(x.todense()), accept_sparse=True)),
-    ('k_best', SelectFromModel(LassoCV(), threshold=200.0)),
-    ('pca', PCA(n_components = 0.95)),
+    ('select_from_model', SelectFromModel(LassoCV(), threshold=200.0)),
+    ('pca', PCA()),
+    ('linear_regression', LogisticRegression(max_iter=50, tol=0.1))
 ],
     verbose = True,
 ) 
