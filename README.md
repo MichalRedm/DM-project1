@@ -15,25 +15,25 @@ A more detailed description of our project can be found in [our report](https://
 ## Prequisities
 
 To run the code from this repository, you need to have the following installed on your computer:
-- [Python](https://www.python.org/downloads/) (version 3.10 or higher);
-- [NumPy library](https://numpy.org/) (version 1.26 or higher);
-- [Pandas library](https://pandas.pydata.org/) (version 2.2 or higher)
-- [Sklearn library](https://scikit-learn.org/stable/)
-- [UMAP library](https://umap-learn.readthedocs.io/en/latest/)
-
-Once you have Python installed, you can run the following commands in your terminal to install all the necessary libraries:
-```bash
-$ pip install numpy
-$ pip install pandas
-$ pip install sklearn
-$ pip install umap-learn
-```
+- [Python](https://www.python.org/downloads/) (version 3.10 or higher).
 
 Additionally, to run code samples in the file `samples.ipynb` [Jupyer Notebook](https://jupyter.org/install) is needed (the file can alternatively be opened in [Google Colaboratory](https://colab.research.google.com/)).
 
 ## Setup
 
-*TODO*
+To download the respository to your local computer run the following command:
+
+```
+$ git clone https://github.com/MichalRedm/DM-project1.git
+```
+
+Then, you need to install all the Python dependencies:
+
+```
+$ pip install -r requirements.txt
+```
+
+Once this is done, you are ready to run the code.
 
 ## Preprocessing the data
 
