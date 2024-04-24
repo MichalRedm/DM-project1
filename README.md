@@ -6,7 +6,7 @@ This repository contains the code for the first project for Data Mining classes 
 - [Wiktor Kamzela](https://github.com/Wector1),
 - [Michał Redmer](https://github.com/MichalRedm).
 
-The general purpose of the code in this repository is to preprocess the dataset to improve results attained by machine learning algorithms trained on this data. The dataset that we have chosen is [Cars Dataset from 1970 to 2024](https://www.kaggle.com/datasets/meruvulikith/90000-cars-data-from-1970-to-2024), containing 10 attributes and 90,000 records.
+The general purpose of the code in this repository is to preprocess the dataset to improve results attained by machine learning algorithms trained on this data. The dataset that we have chosen is [Cars Dataset from 1970 to 2024](https://www.kaggle.com/datasets/meruvulikith/90000-cars-data-from-1970-to-2024), containing 10 attributes and over 90,000 records.
 
 A more detailed description of our project can be found in [our report](https://github.com/MichalRedm/DM-project1/blob/main/Kung_Fu_Pandas.pdf).
 
