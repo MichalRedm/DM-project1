@@ -8,13 +8,13 @@ import numpy as np
 from sklearn.feature_selection import VarianceThreshold, SelectFromModel
 from sklearn.linear_model import Perceptron, LassoCV, LogisticRegression, LinearRegression
 from sklearn.neural_network import MLPRegressor
-from umap.umap_ import UMAP
+# from umap.umap_ import UMAP
 
 num_cols = ['year', 'mileage', 'tax', 'mpg', 'engineSize']
 cat_cols = ['model', 'transmission', 'fuelType',  'Manufacturer']
 
 class FeatureExtraction(BaseEstimator, TransformerMixin):
-    def __init__(self, n_components: float, method: str):
+    def __init__(self, n_components: float, method: str) -> None:
         self.method = method
         self.n_components = n_components
         self.y = False # if y is used by feature extraction algorithm
@@ -26,7 +26,7 @@ class FeatureExtraction(BaseEstimator, TransformerMixin):
         else:
             raise ValueError(f"Unsupported feature extraction method: '{method}'.")
 
-    def set_params(self, n_components: float, method: str):
+    def set_params(self, n_components: float, method: str) -> None:
         self.method = method
         self.n_components = n_components
         self.y = False # if y is used by feature extraction algorithm
@@ -38,14 +38,14 @@ class FeatureExtraction(BaseEstimator, TransformerMixin):
         else:
             raise ValueError(f"Unsupported feature extraction method: '{method}'.")
 
-    def fit(self, X, y):
+    def fit(self, X, y) -> "FeatureExtraction":
         if self.y:
             self.extractor.fit(X, y) 
         else:
             self.extractor.fit(X)
         return self
 
-    def transform(self, X, y=None):
+    def transform(self, X, y=None) -> np.ndarray:
         if self.y:
             return self.extractor.transform(X) 
         return self.extractor.transform(X)
