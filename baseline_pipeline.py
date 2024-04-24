@@ -1,3 +1,6 @@
+"""
+File defining baseline to which we will compare our results.
+"""
 
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler, OneHotEncoder, FunctionTransformer

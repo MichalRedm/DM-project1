@@ -45,7 +45,7 @@ The new dataset will be written to a file `CarsDataProcessed.csv`.
 
 ## Testing the results
 
-*TODO*
+To test how well our preprocessing method works, test it against the baseline by running the code in [grid_search.ipynb](https://github.com/MichalRedm/DM-project1/blob/main/grid_search.ipynb).
 
 ## Code samples
 
