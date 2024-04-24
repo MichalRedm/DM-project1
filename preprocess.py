@@ -71,10 +71,6 @@ def preprocess(
     # Extract features and target.
     X, y = df.drop(target, axis=1), df[target].to_numpy()
 
-    # Determine which columns are numerical and which are categorical.
-    num_cols = list(X.select_dtypes([np.number]).columns)
-    cat_cols = list(np.setdiff1d(X.columns, num_cols))
-
     # Apply the pipeline to preprocess the dataset.
     X_new_np = full_pipeline.fit_transform(X, y)
 
