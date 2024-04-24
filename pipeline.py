@@ -7,11 +7,11 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler, OneHotEncoder, FunctionTransformer
 from sklearn.compose import ColumnTransformer
 from sklearn.base import TransformerMixin, BaseEstimator
-from sklearn.decomposition import PCA, TruncatedSVD
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.decomposition import PCA
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 import numpy as np
 from sklearn.feature_selection import VarianceThreshold, SelectFromModel
-from sklearn.linear_model import Perceptron, LassoCV, LogisticRegression, LinearRegression
+from sklearn.linear_model import LassoCV
 from sklearn.neural_network import MLPRegressor
 
 num_cols = ['year', 'mileage', 'tax', 'mpg', 'engineSize']
@@ -25,7 +25,7 @@ class FeatureExtraction(BaseEstimator, TransformerMixin):
         if method == "PCA":
             self.extractor = PCA(n_components=n_components)
         elif method == "LDA":
-            self.extractor = LinearDiscriminantAnalysis(n_components=n_components)
+            self.extractor = LDA(n_components=n_components)
             self.y = True
         else:
             raise ValueError(f"Unsupported feature extraction method: '{method}'.")
@@ -37,7 +37,7 @@ class FeatureExtraction(BaseEstimator, TransformerMixin):
         if method == "PCA":
             self.extractor = PCA(n_components=n_components)
         elif method == "LDA":
-            self.extractor = LinearDiscriminantAnalysis(n_components=n_components)
+            self.extractor = LDA(n_components=n_components)
             self.y = True
         else:
             raise ValueError(f"Unsupported feature extraction method: '{method}'.")

@@ -7,7 +7,6 @@ to another file.
 """
 
 
-import numpy as np
 import pandas as pd
 from typing import Literal
 from pipeline import full_pipeline

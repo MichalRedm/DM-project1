@@ -3,16 +3,10 @@ File defining baseline to which we will compare our results.
 """
 
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler, OneHotEncoder, FunctionTransformer
+from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.base import TransformerMixin, BaseEstimator
-from sklearn.decomposition import PCA, TruncatedSVD
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-import numpy as np
-from sklearn.feature_selection import VarianceThreshold, SelectFromModel
-from sklearn.linear_model import Perceptron, LassoCV, LogisticRegression, LinearRegression
 from sklearn.neural_network import MLPRegressor
-# from umap.umap_ import UMAP
 
 num_cols = ['year', 'mileage', 'tax', 'mpg', 'engineSize']
 cat_cols = ['model', 'transmission', 'fuelType',  'Manufacturer']
