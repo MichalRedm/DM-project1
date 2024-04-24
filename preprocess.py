@@ -7,17 +7,10 @@ to another file.
 """
 
 
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler, OneHotEncoder, FunctionTransformer
-from sklearn.compose import ColumnTransformer
-from sklearn.base import TransformerMixin
-from sklearn.decomposition import PCA, TruncatedSVD
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 import numpy as np
 import pandas as pd
-from sklearn.feature_selection import VarianceThreshold, SelectFromModel
-from sklearn.linear_model import Perceptron, LassoCV, LogisticRegression, LinearRegression
 from typing import Literal
+from pipeline import full_pipeline
 
 
 INPUT_DATASET = "./CarsData.csv"
@@ -81,30 +74,6 @@ def preprocess(
     # Determine which columns are numerical and which are categorical.
     num_cols = list(X.select_dtypes([np.number]).columns)
     cat_cols = list(np.setdiff1d(X.columns, num_cols))
-
-    # Pipeline to be applied to numerical columns.
-    num_pipeline = Pipeline([
-        ("Variance_threshold", VarianceThreshold(threshold=variance_treshold)),
-        ("std_scaler", StandardScaler())
-    ])
-
-    # Pipeline to be applied to categorical columns.
-    cat_pipeline = Pipeline([
-        ("ohe", OneHotEncoder(handle_unknown="ignore")),
-        ("Variance_threshold", VarianceThreshold(threshold=variance_treshold)),
-    ])
-
-    col_transform = ColumnTransformer([
-        ("num", num_pipeline, num_cols),
-        ("cat", cat_pipeline, cat_cols)
-    ])
-
-    full_pipeline = Pipeline([
-        ("transform", col_transform),
-        ("dense", FunctionTransformer(lambda x: np.array(x.todense()), accept_sparse=True)),
-        ("select_from_model", SelectFromModel(LassoCV(), threshold=feature_selection_treshold)), # Feature selection.
-        (("pca", PCA()) if feature_extraction_method == "PCA" else ("lda", LDA())) # Feature extraction.
-    ], verbose=verbose)
 
     # Apply the pipeline to preprocess the dataset.
     X_new_np = full_pipeline.fit_transform(X, y)

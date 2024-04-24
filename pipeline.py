@@ -73,8 +73,13 @@ full_pipeline = Pipeline([
                                       accept_sparse=True)),
         ('select_from_model', SelectFromModel(LassoCV(), threshold=200)),
         ('feature_extraction', FeatureExtraction(30, 'LDA')),
-        ('model', MLPRegressor(hidden_layer_sizes=(50), batch_size = 8, 
-                               learning_rate_init = 0.1, verbose = True, max_iter=30))
+        
     ],
     verbose = True,
-) 
+)
+
+full_pipeline_with_model = Pipeline([
+    ('full_pipeline', full_pipeline),
+    ('model', MLPRegressor(hidden_layer_sizes=(50), batch_size = 8, 
+                               learning_rate_init = 0.1, verbose = True, max_iter=30))
+])
