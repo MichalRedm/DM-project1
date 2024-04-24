@@ -46,3 +46,7 @@ The new dataset will be written to a file `CarsDataProcessed.csv`.
 ## Testing the results
 
 *TODO*
+
+## Code samples
+
+To have some insight into how our function for data preprocessing operates, visit the file [samples.ipynb](https://github.com/MichalRedm/DM-project1/blob/main/samples.ipynb).
