@@ -7,9 +7,7 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.base import TransformerMixin, BaseEstimator
 from sklearn.neural_network import MLPRegressor
-
-num_cols = ['year', 'mileage', 'tax', 'mpg', 'engineSize']
-cat_cols = ['model', 'transmission', 'fuelType',  'Manufacturer']
+from dataset_info import *
 
 class Dummy(BaseEstimator, TransformerMixin):
     def __init__(self):

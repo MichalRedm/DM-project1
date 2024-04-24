@@ -13,9 +13,7 @@ import numpy as np
 from sklearn.feature_selection import VarianceThreshold, SelectFromModel
 from sklearn.linear_model import LassoCV
 from sklearn.neural_network import MLPRegressor
-
-num_cols = ['year', 'mileage', 'tax', 'mpg', 'engineSize']
-cat_cols = ['model', 'transmission', 'fuelType',  'Manufacturer']
+from dataset_info import *
 
 class FeatureExtraction(BaseEstimator, TransformerMixin):
     def __init__(self, n_components: float, method: str) -> None:
