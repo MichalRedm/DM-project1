@@ -9,7 +9,7 @@ import numpy as np
 from sklearn.feature_selection import VarianceThreshold, SelectFromModel
 from sklearn.linear_model import Perceptron, LassoCV, LogisticRegression, LinearRegression
 from sklearn.neural_network import MLPRegressor
-from umap.umap_ import UMAP
+# from umap.umap_ import UMAP
 
 num_cols = ['year', 'mileage', 'tax', 'mpg', 'engineSize']
 cat_cols = ['model', 'transmission', 'fuelType',  'Manufacturer']
