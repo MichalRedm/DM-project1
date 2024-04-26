@@ -51,8 +51,8 @@ class FeatureExtraction(BaseEstimator, TransformerMixin):
             - PCA (Principal Component Analysis),
             - LDA (Linear Discriminant Analysis).
         """
-        assert (isinstance(n_components, float and 0 < n_components < 1) or \
-               (isinstance(n_components, int)) and n_components > 0), \
+        assert (isinstance(n_components, float) and 0 < n_components < 1) or \
+               (isinstance(n_components, int) and n_components > 0), \
                "Parameter 'n_components' must be a float between 0 and 1 or a positive integer."
         self.method = method
         self.n_components = n_components
