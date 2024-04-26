@@ -14,9 +14,46 @@ from sklearn.feature_selection import VarianceThreshold, SelectFromModel
 from sklearn.linear_model import LassoCV
 from sklearn.neural_network import MLPRegressor
 from dataset_info import *
+from typing import Literal
 
 class FeatureExtraction(BaseEstimator, TransformerMixin):
-    def __init__(self, n_components: float, method: str) -> None:
+    """
+    Class used for feature extraction with various algorithms.
+
+    Parameters
+    ----------
+    n_components : float | int
+        Number of components to keep, if it is a positive integer, or variance to be
+        kept if it is a float between 0 and 1.
+    
+    method : Literal["PCA", "LDA"]
+        Feature extraction algorithm that should be employed. The following ones
+        are supported:
+        - PCA (Principal Component Analysis),
+        - LDA (Linear Discriminant Analysis).
+    """
+    def __init__(self, n_components: float | int, method: Literal["PCA", "LDA"]) -> None:
+        self.set_params(n_components, method)
+
+    def set_params(self, n_components: float | int, method: Literal["PCA", "LDA"]) -> None:
+        """
+        Sets the parameters for the feature extraction algorithm.
+
+        Parameters
+        ----------
+        n_components : float | int
+            Number of components to keep, if it is a positive integer, or variance to be
+            kept if it is a float between 0 and 1.
+        
+        method : Literal["PCA", "LDA"]
+            Feature extraction algorithm that should be employed. The following ones
+            are supported:
+            - PCA (Principal Component Analysis),
+            - LDA (Linear Discriminant Analysis).
+        """
+        assert (isinstance(n_components, float and 0 < n_components < 1) or \
+               (isinstance(n_components, int)) and n_components > 0), \
+               "Parameter 'n_components' must be a float between 0 and 1 or a positive integer."
         self.method = method
         self.n_components = n_components
         self.y = False # if y is used by feature extraction algorithm
@@ -28,19 +65,21 @@ class FeatureExtraction(BaseEstimator, TransformerMixin):
         else:
             raise ValueError(f"Unsupported feature extraction method: '{method}'.")
 
-    def set_params(self, n_components: float, method: str) -> None:
-        self.method = method
-        self.n_components = n_components
-        self.y = False # if y is used by feature extraction algorithm
-        if method == "PCA":
-            self.extractor = PCA(n_components=n_components)
-        elif method == "LDA":
-            self.extractor = LDA(n_components=n_components)
-            self.y = True
-        else:
-            raise ValueError(f"Unsupported feature extraction method: '{method}'.")
+    def fit(self, X, y=None) -> "FeatureExtraction":
+        """
+        Fits the feature extraction algorithm to the data.
 
-    def fit(self, X, y) -> "FeatureExtraction":
+        Parameters
+        ----------
+        X 
+            The input features for training.
+        y
+            The target values corresponding to the training samples in X.
+
+        Returns
+        -------
+        `self` (an instance of `FeatureExtraction` class fit to the data).
+        """
         if self.y:
             self.extractor.fit(X, y) 
         else:
@@ -48,6 +87,21 @@ class FeatureExtraction(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X, y=None) -> np.ndarray:
+        """
+        Transforms the data by performing feature extraction.
+
+        Parameters
+        ----------
+        X 
+            The input features.
+        y
+            The target values corresponding to the training samples in X.
+
+        Returns
+        -------
+        np.ndarray
+            An array of transformed features.
+        """
         if self.y:
             return self.extractor.transform(X) 
         return self.extractor.transform(X)
