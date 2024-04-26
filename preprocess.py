@@ -9,7 +9,7 @@ to another file.
 
 import pandas as pd
 from typing import Literal
-from pipeline import full_pipeline
+from pipeline import get_full_pipeline
 
 
 INPUT_DATASET = "./CarsData.csv"
@@ -66,6 +66,8 @@ def preprocess(
     assert isinstance(feature_selection_treshold, float) and feature_selection_treshold > 0, "Parameter 'feature_selection_treshold' must be a positive float."
     assert feature_extraction_method in ("PCA", "LDA"), "Parameter 'feature_extraction_method' must be 'PCA' or 'LDA'."
     assert isinstance(verbose, bool), "Parameter 'verbose' must be a boolean."
+
+    full_pipeline = get_full_pipeline(df, target)
 
     # Extract features and target.
     X, y = df.drop(target, axis=1), df[target].to_numpy()

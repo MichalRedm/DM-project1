@@ -10,10 +10,11 @@ from sklearn.base import TransformerMixin, BaseEstimator
 from sklearn.decomposition import PCA
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 import numpy as np
+import pandas as pd
 from sklearn.feature_selection import VarianceThreshold, SelectFromModel
 from sklearn.linear_model import LassoCV
 from sklearn.neural_network import MLPRegressor
-from dataset_info import *
+from dataset_info import get_dataset_info
 from typing import Literal
 
 class FeatureExtraction(BaseEstimator, TransformerMixin):
@@ -107,35 +108,48 @@ class FeatureExtraction(BaseEstimator, TransformerMixin):
         return self.extractor.transform(X)
 
 
-num_pipeline = Pipeline([
-    ('Variance_threshold', VarianceThreshold(threshold=0.01)),
-    ('std_scaler', StandardScaler())
-])
+def get_full_pipeline(df: pd.DataFrame, target: str) -> Pipeline:
 
-cat_pipeline = Pipeline([
-    ('ohe', OneHotEncoder(handle_unknown='ignore')),
-    ('Variance_threshold', VarianceThreshold(threshold=0.01)),
-])
+    num_cols, cat_cols = get_dataset_info(df, target)
 
-col_transform = ColumnTransformer([
-    ('num', num_pipeline, num_cols),
-    ('cat', cat_pipeline, cat_cols)
-])
+    num_pipeline = Pipeline([
+        ('Variance_threshold', VarianceThreshold(threshold=0.01)),
+        ('std_scaler', StandardScaler())
+    ])
 
-# Pipeline parameters set to best chose with grid search
-full_pipeline = Pipeline([
-        ('transform', col_transform),
-        ('dense', FunctionTransformer(lambda x: np.array(x.todense()), 
-                                      accept_sparse=True)),
-        ('select_from_model', SelectFromModel(LassoCV(), threshold=200)),
-        ('feature_extraction', FeatureExtraction(30, 'LDA')),
-        
-    ],
-    verbose = True,
-)
+    cat_pipeline = Pipeline([
+        ('ohe', OneHotEncoder(handle_unknown='ignore')),
+        ('Variance_threshold', VarianceThreshold(threshold=0.01)),
+    ])
 
-full_pipeline_with_model = Pipeline([
-    ('full_pipeline', full_pipeline),
-    ('model', MLPRegressor(hidden_layer_sizes=(50), batch_size = 8, 
-                               learning_rate_init = 0.1, verbose = True, max_iter=30))
-])
+    col_transform = ColumnTransformer([
+        ('num', num_pipeline, num_cols),
+        ('cat', cat_pipeline, cat_cols)
+    ])
+
+    # Pipeline parameters set to best chose with grid search
+    full_pipeline = Pipeline([
+            ('transform', col_transform),
+            ('dense', FunctionTransformer(lambda x: np.array(x.todense()), 
+                                        accept_sparse=True)),
+            ('select_from_model', SelectFromModel(LassoCV(), threshold=200)),
+            ('feature_extraction', FeatureExtraction(30, 'LDA')),
+            
+        ],
+        verbose = True,
+    )
+
+    return full_pipeline
+
+
+def get_full_pipeline_with_model(df: pd.DataFrame, target: str) -> Pipeline:
+
+    full_pipeline = get_full_pipeline(df, target)
+
+    full_pipeline_with_model = Pipeline([
+        ('full_pipeline', full_pipeline),
+        ('model', MLPRegressor(hidden_layer_sizes=(50), batch_size = 8, 
+                                learning_rate_init = 0.1, verbose = True, max_iter=30))
+    ])
+
+    return full_pipeline_with_model
