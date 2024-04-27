@@ -194,7 +194,7 @@ def get_full_pipeline_with_model(
         feature_selection_treshold: float = 200.0,
         feature_extraction_method: Literal["PCA", "LDA"] = "PCA",
         n_components: int | float = 30,
-        verbose: bool = True
+        verbose: bool = False
     ) -> Pipeline:
     """
     Creates a pipeline with selected parameters and a machine learning algorithm attached to it.

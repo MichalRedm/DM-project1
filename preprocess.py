@@ -23,7 +23,7 @@ def preprocess(
         feature_selection_treshold: float = 200.0,
         feature_extraction_method: Literal["PCA", "LDA"] = "PCA",
         n_components: int | float = 30,
-        verbose: bool = True
+        verbose: bool = False
     ) -> pd.DataFrame:
     """
     Performs preprocessing on the data.
@@ -89,7 +89,7 @@ def preprocess(
 
 def main() -> None:
     df = pd.read_csv(INPUT_DATASET)
-    df = preprocess(df, "price")
+    df = preprocess(df, "price", verbose=True)
     df.to_csv(OUTPUT_DATASET, index=False)
 
 
