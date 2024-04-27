@@ -115,7 +115,7 @@ def get_full_pipeline(
         feature_selection_treshold: float = 200.0,
         feature_extraction_method: Literal["PCA", "LDA"] = "PCA",
         n_components: int | float = 30,
-        verbose: bool = True
+        verbose: bool = False
     ) -> Pipeline:
     """
     Creates a pipeline with selected parameters.
