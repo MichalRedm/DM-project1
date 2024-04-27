@@ -108,18 +108,63 @@ class FeatureExtraction(BaseEstimator, TransformerMixin):
         return self.extractor.transform(X)
 
 
-def get_full_pipeline(df: pd.DataFrame, target: str) -> Pipeline:
+def get_full_pipeline(
+        df: pd.DataFrame,
+        target: str,
+        variance_treshold: float = 0.01,
+        feature_selection_treshold: float = 200.0,
+        feature_extraction_method: Literal["PCA", "LDA"] = "PCA",
+        n_components: int | float = 30,
+        verbose: bool = True
+    ) -> Pipeline:
+    """
+    Creates a pipeline with selected parameters.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Dataset on which the preprocessing shall be performed, in the form of
+        a pandas dataframe.
+    
+    target : str
+        Name of the target column (for which the machine learning algorithm
+        should predict the value).
+    
+    variance_treshold : float
+        Treshold such that features with variance below it will be removed.
+    
+    feature_selection_treshold : float
+        Treshold used for feature selection.
+
+    feature_extraction_method : Literal["PCA", "LDA"]
+        Feature extraction algorithm that should be employed. The following ones
+        are supported:
+        - PCA (Principal Component Analysis),
+        - LDA (Linear Discriminant Analysis).
+    
+    n_components : float | int
+        Number of components to keep, if it is a positive integer, or variance to be
+        kept if it is a float between 0 and 1.
+
+    verbose : bool
+        If set to true, the pipeline will print information about the progress
+        of data preprocessing when used.
+
+    Returns
+    -------
+    Pipeline with provided parameters.
+    """
 
     num_cols, cat_cols = get_dataset_info(df, target)
 
     num_pipeline = Pipeline([
-        ('Variance_threshold', VarianceThreshold(threshold=0.01)),
+        ('Variance_threshold', VarianceThreshold(threshold=variance_treshold)),
         ('std_scaler', StandardScaler())
     ])
 
     cat_pipeline = Pipeline([
         ('ohe', OneHotEncoder(handle_unknown='ignore')),
-        ('Variance_threshold', VarianceThreshold(threshold=0.01)),
+        ('Variance_threshold', VarianceThreshold(threshold=variance_treshold)),
     ])
 
     col_transform = ColumnTransformer([
@@ -132,24 +177,70 @@ def get_full_pipeline(df: pd.DataFrame, target: str) -> Pipeline:
             ('transform', col_transform),
             ('dense', FunctionTransformer(lambda x: np.array(x.todense()), 
                                         accept_sparse=True)),
-            ('select_from_model', SelectFromModel(LassoCV(), threshold=200)),
-            ('feature_extraction', FeatureExtraction(30, 'LDA')),
+            ('select_from_model', SelectFromModel(LassoCV(), threshold=feature_selection_treshold)),
+            ('feature_extraction', FeatureExtraction(n_components, feature_extraction_method)),
             
         ],
-        verbose = True,
+        verbose=verbose,
     )
 
     return full_pipeline
 
 
-def get_full_pipeline_with_model(df: pd.DataFrame, target: str) -> Pipeline:
+def get_full_pipeline_with_model(
+        df: pd.DataFrame,
+        target: str,
+        variance_treshold: float = 0.01,
+        feature_selection_treshold: float = 200.0,
+        feature_extraction_method: Literal["PCA", "LDA"] = "PCA",
+        n_components: int | float = 30,
+        verbose: bool = True
+    ) -> Pipeline:
+    """
+    Creates a pipeline with selected parameters and a machine learning algorithm attached to it.
 
-    full_pipeline = get_full_pipeline(df, target)
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Dataset on which the preprocessing shall be performed, in the form of
+        a pandas dataframe.
+    
+    target : str
+        Name of the target column (for which the machine learning algorithm
+        should predict the value).
+    
+    variance_treshold : float
+        Treshold such that features with variance below it will be removed.
+    
+    feature_selection_treshold : float
+        Treshold used for feature selection.
+
+    feature_extraction_method : Literal["PCA", "LDA"]
+        Feature extraction algorithm that should be employed. The following ones
+        are supported:
+        - PCA (Principal Component Analysis),
+        - LDA (Linear Discriminant Analysis).
+    
+    n_components : float | int
+        Number of components to keep, if it is a positive integer, or variance to be
+        kept if it is a float between 0 and 1.
+
+    verbose : bool
+        If set to true, the pipeline will print information about the progress
+        of data preprocessing when used.
+
+    Returns
+    -------
+    Pipeline with provided parameters and machine learning model.
+    """
+
+    full_pipeline = get_full_pipeline(df, target, variance_treshold, feature_selection_treshold,
+                                      feature_extraction_method, n_components, verbose)
 
     full_pipeline_with_model = Pipeline([
         ('full_pipeline', full_pipeline),
-        ('model', MLPRegressor(hidden_layer_sizes=(50), batch_size = 8, 
-                                learning_rate_init = 0.1, verbose = True, max_iter=30))
+        ('model', MLPRegressor(hidden_layer_sizes=(50), batch_size = 8,
+                               learning_rate_init = 0.1, verbose = True, max_iter=30))
     ])
 
     return full_pipeline_with_model

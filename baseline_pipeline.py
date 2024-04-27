@@ -23,6 +23,23 @@ class Dummy(BaseEstimator, TransformerMixin):
 
 
 def get_baseline_full_pipeline(df: pd.DataFrame, target: str) -> Pipeline:
+    """
+    Creates a baseline pipeline with machine learning algorithm attached to it.
+
+     Parameters
+    ----------
+    df : pd.DataFrame
+        Dataset on which the preprocessing shall be performed, in the form of
+        a pandas dataframe.
+    
+    target : str
+        Name of the target column (for which the machine learning algorithm
+        should predict the value).
+
+    Returns
+    -------
+    Pipeline with provided parameters and machine learning model.
+    """
 
     num_cols, cat_cols = get_dataset_info(df, target)
 
@@ -42,7 +59,7 @@ def get_baseline_full_pipeline(df: pd.DataFrame, target: str) -> Pipeline:
     baseline_full_pipeline = Pipeline([
             ('transform', baseline_col_transform),
             ('model', MLPRegressor(hidden_layer_sizes=(50), batch_size = 8,
-                                learning_rate_init = 0.1, verbose = True, max_iter=30))
+                                   learning_rate_init = 0.1, verbose = True, max_iter=30))
         ],
         verbose=True
     )

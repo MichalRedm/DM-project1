@@ -22,6 +22,7 @@ def preprocess(
         variance_treshold: float = 0.01,
         feature_selection_treshold: float = 200.0,
         feature_extraction_method: Literal["PCA", "LDA"] = "PCA",
+        n_components: int | float = 30,
         verbose: bool = True
     ) -> pd.DataFrame:
     """
@@ -49,6 +50,10 @@ def preprocess(
         - PCA (Principal Component Analysis),
         - LDA (Linear Discriminant Analysis).
 
+    n_components : float | int
+        Number of components to keep, if it is a positive integer, or variance to be
+        kept if it is a float between 0 and 1.
+
     verbose : bool
         If set to true, the function will print information about the progress
         of data preprocessing.
@@ -67,7 +72,8 @@ def preprocess(
     assert feature_extraction_method in ("PCA", "LDA"), "Parameter 'feature_extraction_method' must be 'PCA' or 'LDA'."
     assert isinstance(verbose, bool), "Parameter 'verbose' must be a boolean."
 
-    full_pipeline = get_full_pipeline(df, target)
+    full_pipeline = get_full_pipeline(df, target, variance_treshold, feature_selection_treshold,
+                                      feature_extraction_method, n_components, verbose)
 
     # Extract features and target.
     X, y = df.drop(target, axis=1), df[target].to_numpy()
