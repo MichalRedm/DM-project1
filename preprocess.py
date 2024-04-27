@@ -9,8 +9,7 @@ to another file.
 
 import pandas as pd
 from typing import Literal
-from pipeline import full_pipeline
-from dataset_info import num_cols, cat_cols
+from pipeline import get_full_pipeline
 
 
 INPUT_DATASET = "./CarsData.csv"
@@ -23,7 +22,8 @@ def preprocess(
         variance_treshold: float = 0.01,
         feature_selection_treshold: float = 200.0,
         feature_extraction_method: Literal["PCA", "LDA"] = "PCA",
-        verbose: bool = True
+        n_components: int | float = 30,
+        verbose: bool = False
     ) -> pd.DataFrame:
     """
     Performs preprocessing on the data.
@@ -50,6 +50,10 @@ def preprocess(
         - PCA (Principal Component Analysis),
         - LDA (Linear Discriminant Analysis).
 
+    n_components : float | int
+        Number of components to keep, if it is a positive integer, or variance to be
+        kept if it is a float between 0 and 1.
+
     verbose : bool
         If set to true, the function will print information about the progress
         of data preprocessing.
@@ -69,6 +73,9 @@ def preprocess(
     assert isinstance(verbose, bool), "Parameter 'verbose' must be a boolean."
     assert set(num_cols + cat_cols + [target]) == set(df.columns), "Invalid dataset provided."
 
+    full_pipeline = get_full_pipeline(df, target, variance_treshold, feature_selection_treshold,
+                                      feature_extraction_method, n_components, verbose)
+
     # Extract features and target.
     X, y = df.drop(target, axis=1), df[target].to_numpy()
 
@@ -83,7 +90,7 @@ def preprocess(
 
 def main() -> None:
     df = pd.read_csv(INPUT_DATASET)
-    df = preprocess(df, "price")
+    df = preprocess(df, "price", verbose=True)
     df.to_csv(OUTPUT_DATASET, index=False)
 
 
