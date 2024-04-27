@@ -17,6 +17,7 @@ from sklearn.neural_network import MLPRegressor
 from dataset_info import get_dataset_info
 from typing import Literal
 
+
 class FeatureExtraction(BaseEstimator, TransformerMixin):
     """
     Class used for feature extraction with various algorithms.
@@ -157,11 +158,13 @@ def get_full_pipeline(
 
     num_cols, cat_cols = get_dataset_info(df, target)
 
+    # Pipeline to be applied to numeric columns.
     num_pipeline = Pipeline([
         ('Variance_threshold', VarianceThreshold(threshold=variance_treshold)),
         ('std_scaler', StandardScaler())
     ])
 
+    # Pipeline to be applied to categorical columns.
     cat_pipeline = Pipeline([
         ('ohe', OneHotEncoder(handle_unknown='ignore')),
         ('Variance_threshold', VarianceThreshold(threshold=variance_treshold)),
@@ -172,7 +175,6 @@ def get_full_pipeline(
         ('cat', cat_pipeline, cat_cols)
     ])
 
-    # Pipeline parameters set to best chose with grid search
     full_pipeline = Pipeline([
             ('transform', col_transform),
             ('dense', FunctionTransformer(lambda x: np.array(x.todense()), 
