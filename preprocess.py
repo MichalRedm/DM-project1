@@ -71,7 +71,6 @@ def preprocess(
     assert isinstance(feature_selection_treshold, float) and feature_selection_treshold > 0, "Parameter 'feature_selection_treshold' must be a positive float."
     assert feature_extraction_method in ("PCA", "LDA"), "Parameter 'feature_extraction_method' must be 'PCA' or 'LDA'."
     assert isinstance(verbose, bool), "Parameter 'verbose' must be a boolean."
-    assert set(num_cols + cat_cols + [target]) == set(df.columns), "Invalid dataset provided."
 
     full_pipeline = get_full_pipeline(df, target, variance_treshold, feature_selection_treshold,
                                       feature_extraction_method, n_components, verbose)
